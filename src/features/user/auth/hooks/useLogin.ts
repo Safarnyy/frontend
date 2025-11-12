@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-
 import { authAPI } from "../api/auth.api";
 import { loginSchema, type LoginForm } from "../schemas/auth.schema";
 import { useNavigate } from "react-router";
@@ -14,10 +13,7 @@ export function useLogin() {
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   const loginMutation = useMutation({
@@ -28,17 +24,10 @@ export function useLogin() {
       toast.success(`Welcome back, ${user.firstName}!`);
       navigate("/");
     },
-    onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Login failed";
-      toast.error(message);
-    },
+    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Login failed"),
   });
 
   const onSubmit = (values: LoginForm) => loginMutation.mutate(values);
 
-  return {
-    form,
-    onSubmit,
-    isLoading: loginMutation.isPending, // ✅ React Query v5
-  };
+  return { form, onSubmit, isLoading: loginMutation.isPending };
 }

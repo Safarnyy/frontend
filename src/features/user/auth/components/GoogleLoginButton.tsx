@@ -9,20 +9,15 @@ export default function GoogleLoginButton() {
   const navigate = useNavigate();
 
   const handleGoogleLogin = async (response: CredentialResponse) => {
-    if (!response.credential) {
-      toast.error("Google login failed");
-      return;
-    }
+    if (!response.credential) return toast.error("Google login failed");
 
     try {
-      // Call backend API to login/register with Google token
       const user = await authAPI.googleLogin({ token: response.credential });
       login(user);
       toast.success(`Welcome back, ${user.firstName}!`);
       navigate("/");
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Login failed";
-      toast.error(message);
+      toast.error(err instanceof Error ? err.message : "Login failed");
     }
   };
 
