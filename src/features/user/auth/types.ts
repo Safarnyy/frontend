@@ -53,7 +53,7 @@ export type ApiSuccess<T = unknown> = {
 };
 
 // ✅ Standardized auth responses
-export type AuthResponse = ApiSuccess<User>;
+export type AuthResponse = ApiSuccess<{ firstName: string;lastName:string;role:'admin'|'user';id:string }>;
 
 // ✅ Forgot password / verify reset responses
 export type SimpleResponse = ApiSuccess<null>;

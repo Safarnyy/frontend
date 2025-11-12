@@ -15,9 +15,10 @@ export default function AuthProvider({ children }: Props) {
 
   const fetchCurrentUser = useCallback(async () => {
     try {
-      const me = await authAPI.me() || null;
+      const me = await authAPI.me();
       setUser(me);
-    } catch {
+    } catch (error) {
+      console.error("Failed to fetch current user:", error);
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -30,27 +31,45 @@ export default function AuthProvider({ children }: Props) {
 
   const login = useCallback((loggedUser: User) => {
     setUser(loggedUser);
+    setUpdatedUser(null);
   }, []);
 
-  const logout = useCallback(() => {
-    authAPI.logout().finally(() => {
+  const logout = useCallback(async () => {
+    try {
+      await authAPI.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
       setUser(null);
-    });
+      setUpdatedUser(null);
+      setResetEmail(null);
+      setIsCodeVerified(false);
+    }
   }, []);
 
   const updateUser = useCallback((updated: UpdatedUser) => {
-    setUser((prev) => ({ ...prev, ...updated } as User));
+    setUser((prev) => prev ? { ...prev, ...updated } : null);
     setUpdatedUser(updated);
   }, []);
 
+  const handleSetUser = useCallback((newUser: User | null) => {
+    setUser(newUser);
+    if (!newUser) {
+      setUpdatedUser(null);
+    }
+  }, []);
+
+  const handleSetUpdatedUser = useCallback((updated: UpdatedUser | null) => {
+    setUpdatedUser(updated);
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         updatedUser,
-        setUpdatedUser,
-        setUser,
+        setUpdatedUser: handleSetUpdatedUser,
+        setUser: handleSetUser,
         isAuthenticated,
         isLoading,
         login,

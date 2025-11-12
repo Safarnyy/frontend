@@ -6,28 +6,48 @@ import { authAPI } from "../api/auth.api";
 import { loginSchema, type LoginForm } from "../schemas/auth.schema";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../../../hooks/useAuth";
+import { useCallback } from "react";
 
-export function useLogin() {
+export function useLogin(onSuccessCallback?: () => void) {
   const navigate = useNavigate();
   const { login: loginContext } = useAuth();
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
+    mode: "onChange",
   });
 
   const loginMutation = useMutation({
     mutationFn: (values: LoginForm) => authAPI.login(values),
-    onSuccess: async () => {
-      const user = await authAPI.me();
+    onSuccess: async (user) => {
       loginContext(user);
       toast.success(`Welcome back, ${user.firstName}!`);
+      
+      // Call the success callback to close modal
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
+      
       navigate("/");
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Login failed"),
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : "Login failed";
+      toast.error(message);
+      
+      // Clear password field on error
+      form.setValue("password", "");
+    },
   });
 
-  const onSubmit = (values: LoginForm) => loginMutation.mutate(values);
+  const onSubmit = useCallback((values: LoginForm) => {
+    loginMutation.mutate(values);
+  }, [loginMutation]);
 
-  return { form, onSubmit, isLoading: loginMutation.isPending };
+  return { 
+    form, 
+    onSubmit, 
+    isLoading: loginMutation.isPending, 
+    error: loginMutation.error 
+  };
 }
