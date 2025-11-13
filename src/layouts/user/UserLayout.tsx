@@ -7,7 +7,7 @@ export default function UserLayout() {
       {/* User Navbar */}
       {/* Theme Toggle */}
 
-      <main style={{ padding: '1rem' }}>
+      <main>
         <Outlet />
       </main>
 
