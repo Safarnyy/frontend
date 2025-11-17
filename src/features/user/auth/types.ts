@@ -1,3 +1,4 @@
+import type { User } from '../../../context/AuthContext';
 
 /**
  * ---------------------------
@@ -19,7 +20,12 @@ export type RegisterRequest = {
   lastName: string;
   email: string;
   password: string;
-  // passwordConfirm is handled on frontend only
+};
+
+// ✅ Verify Email
+export type VerifyEmailRequest = {
+  email: string;
+  verifyCode: string;
 };
 
 // ✅ Forgot Password
@@ -45,15 +51,12 @@ export type ResetPasswordRequest = {
  * ---------------------------
  */
 
-// ✅ Backend always returns `{ status, message, data? }`
+// ✅ Backend response format
 export type ApiSuccess<T = unknown> = {
   status: string;
   message?: string;
   data?: T;
 };
 
-// ✅ Standardized auth responses
+// ✅ Auth response with user data
 export type AuthResponse = ApiSuccess<User>;
-
-// ✅ Forgot password / verify reset responses
-export type SimpleResponse = ApiSuccess<null>;
