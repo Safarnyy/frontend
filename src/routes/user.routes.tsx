@@ -7,14 +7,8 @@ import AboutPage from '../features/user/about/pages/AboutPage'
 import ContactPage from '../features/user/contact/pages/ContactPage'
 import Trips from '../features/user/trips/pages/Trips'
 import TripDetails from './../features/user/trips/pages/TripDetails';
-
-// === Placeholder components (replace later) ===
-const Login = () => <div>Login</div>
-const Register = () => <div>Register</div>
-const ForgotPassword = () => <div>Forgot Password</div>
-const VerifyResetCode = () => <div>Verify Reset Code</div>
-const ResetPassword = () => <div>Reset Password</div>
-
+import HotelDetails from "../features/user/Hotel/components/HotelDetails";
+        
 const Profile = () => <div>User Profile</div>
 const Bookings = () => <div>My Bookings</div>
 const BookingDetails = () => <div>Booking Details</div>
@@ -32,22 +26,52 @@ export const userRoutes = (
       <Route path={PUBLIC_ROUTES.CONTACT.replace('/', '')} element={<ContactPage />} />
       <Route path={PUBLIC_ROUTES.TRIPS.replace('/', '')} element={<Trips />} />
       <Route path={PUBLIC_ROUTES.TRIP_DETAILS.replace('/', '')} element={<TripDetails />} />
+      <Route
+        path={PUBLIC_ROUTES.HOTEL_DETAILS.replace("/", "")}
+        element={<HotelDetails />}
+      />
 
       {/* Auth Routes */}
-      <Route path={PUBLIC_ROUTES.LOGIN.replace('/', '')} element={<Login />} />
-      <Route path={PUBLIC_ROUTES.REGISTER.replace('/', '')} element={<Register />} />
-      <Route path={PUBLIC_ROUTES.FORGOT_PASSWORD.replace('/', '')} element={<ForgotPassword />} />
-      <Route path={PUBLIC_ROUTES.VERIFY_RESET_CODE.replace('/', '')} element={<VerifyResetCode />} />
-      <Route path={PUBLIC_ROUTES.RESET_PASSWORD.replace('/', '')} element={<ResetPassword />} />
+      <Route path={"/auth/success"} element={<GoogleCallbackHandler />} />
+      <Route
+        path="/auth/error"
+        element={<div>Google authentication failed. Please try again.</div>}
+      />
 
       {/* User Routes */}
-      <Route path={USER_ROUTES.PROFILE.replace('/', '')} element={<Profile />} />
-      <Route path={USER_ROUTES.BOOKINGS.replace('/', '')} element={<Bookings />} />
-      <Route path={USER_ROUTES.BOOKING_DETAILS.replace('/', '')} element={<BookingDetails />} />
-      <Route path={USER_ROUTES.PAYMENTS.replace('/', '')} element={<Payments />} />
-      <Route path={USER_ROUTES.REVIEWS.replace('/', '')} element={<Reviews />} />
-      <Route path={USER_ROUTES.AI_ASSISTANT.replace('/', '')} element={<AIAssistant />} />
-      <Route path={USER_ROUTES.RECOMMENDATIONS.replace('/', '')} element={<Recommendations />} />
+
+      <Route
+        path={USER_ROUTES.PROFILE.replace("/", "")}
+        element={
+          <ProtectedRoute requiredRole="user">
+            <ProfileDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={USER_ROUTES.BOOKINGS.replace("/", "")}
+        element={<Bookings />}
+      />
+      <Route
+        path={USER_ROUTES.BOOKING_DETAILS.replace("/", "")}
+        element={<BookingDetails />}
+      />
+      <Route
+        path={USER_ROUTES.PAYMENTS.replace("/", "")}
+        element={<Payments />}
+      />
+      <Route
+        path={USER_ROUTES.REVIEWS.replace("/", "")}
+        element={<Reviews />}
+      />
+      <Route
+        path={USER_ROUTES.AI_ASSISTANT.replace("/", "")}
+        element={<AIAssistant />}
+      />
+      <Route
+        path={USER_ROUTES.RECOMMENDATIONS.replace("/", "")}
+        element={<Recommendations />}
+      />
     </Route>
   </>
-)
+);

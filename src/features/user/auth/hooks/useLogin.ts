@@ -4,30 +4,41 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { authAPI } from "../api/auth.api";
 import { loginSchema, type LoginForm } from "../schemas/auth.schema";
-import { useNavigate } from "react-router";
+import { useCallback } from "react";
 import { useAuth } from "../../../../hooks/useAuth";
 
-export function useLogin() {
-  const navigate = useNavigate();
+export function useLogin(onSuccessCallback?: () => void) {
   const { login: loginContext } = useAuth();
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
+    mode: "onChange",
   });
 
   const loginMutation = useMutation({
     mutationFn: (values: LoginForm) => authAPI.login(values),
-    onSuccess: async () => {
-      const user = await authAPI.me();
+    onSuccess: async (user) => {
       loginContext(user);
-      toast.success(`Welcome back, ${user.firstName}!`);
-      navigate("/");
+      toast.success(`Welcome${user.firstName ? `, ${user.firstName}` : ""}!`);
+      if (onSuccessCallback) onSuccessCallback();
     },
-    onError: (err: unknown) => toast.error(err instanceof Error ? err.message : "Login failed"),
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : "Login failed";
+      toast.error(message);
+      form.setValue("password", "");
+    },
   });
 
-  const onSubmit = (values: LoginForm) => loginMutation.mutate(values);
+  const onSubmit = useCallback((values: LoginForm) => {
+    loginMutation.mutate(values);
+  }, [loginMutation]);
 
-  return { form, onSubmit, isLoading: loginMutation.isPending };
+  return { 
+    form, 
+    onSubmit, 
+    isLoading: loginMutation.isPending, 
+    isSuccess: loginMutation.isSuccess,
+    error: loginMutation.error 
+  };
 }

@@ -1,43 +1,59 @@
-import http from '../../../../lib/axios';
-import type { UpdateProfileRequest, UserProfile } from '../types';
+import http from "../../../../lib/axios";
+import type {
+  UserProfile,
+  UpdateProfileInput,
+  ChangePasswordInput,
+  TripsResponse,
+  ApiResponse,
+} from "../types";
 
 export const profileAPI = {
   getProfile: async (): Promise<UserProfile> => {
-    const { data } = await http.get<{ data: UserProfile }>('/users/profile', {
-      withCredentials: true,
-    });
+    const { data } = await http.get<ApiResponse<UserProfile>>("/users/profile", { withCredentials: true });
     return data.data;
   },
 
-  updateProfile: async (profileData: UpdateProfileRequest): Promise<UserProfile> => {
-    const formData = new FormData();
-    Object.entries(profileData).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        formData.append(key, value as any);
-      }
-    });
+  updateProfile: async (body: Partial<UpdateProfileInput>): Promise<UserProfile> => {
+    if (body.avatar) {
+      const formData = new FormData();
+      if (body.firstName !== undefined) formData.append("firstName", body.firstName);
+      if (body.lastName !== undefined) formData.append("lastName", body.lastName);
+      if (body.email !== undefined) formData.append("email", body.email);
+      if (body.phone !== undefined) formData.append("phone", body.phone);
+      formData.append("avatar", body.avatar);
 
-    const { data } = await http.put<{ data: UserProfile }>(
-      '/users/updateMe',
-      formData,
-      {
+      const { data } = await http.put<ApiResponse<UserProfile>>("/users/updateMe", formData, {
         withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return data.data;
+    } else {
+      const { data } = await http.put<ApiResponse<UserProfile>>("/users/updateMe", body, { withCredentials: true });
+      return data.data;
+    }
+  },
+
+
+
+  changePassword: async (body: ChangePasswordInput): Promise<void> => {
+    await http.patch(
+      "/users/changeMyPassword",
+      {
+        currentPassword: body.currentPassword,
+        password: body.newPassword,
+        passwordConfirm: body.confirmPassword,
+      },
+      { withCredentials: true }
     );
-    return data.data;
   },
 
-  deactivateProfile: async () => {
-    const { data } = await http.delete('/users/deactivateMe', {
-      withCredentials: true,
-    });
-    return data;
-  },
-
-    changePassword: async (data: { currentPassword: string; password: string; passwordConfirm: string }) => {
-    const response = await http.patch('/users/changeMyPassword', data, { withCredentials: true });
-    return response.data;
+  getTrips: async (): Promise<TripsResponse> => {
+    try {
+      const { data } = await http.get<ApiResponse<TripsResponse>>("/users/trips", { withCredentials: true });
+      return data.data;
+    } catch (err) {
+      console.warn("Trips endpoint not available:", err);
+      return { trips: [] };
+    }
   },
 };
