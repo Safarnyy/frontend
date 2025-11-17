@@ -1,3 +1,4 @@
+import HotelPage from "../../Hotel/Page/HotelPage";
 import BestPackages from "../components/BestPackages";
 import Hero from "../components/Hero";
 import OurServices from "../components/OurServices";
@@ -10,6 +11,7 @@ export default function Home() {
       <OurServices />
       <PopularDestinations />
       <BestPackages />
+      <HotelPage />
     </>
   );
 }

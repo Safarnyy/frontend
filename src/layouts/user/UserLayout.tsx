@@ -1,6 +1,7 @@
 // src/layouts/UserLayout.tsx
-import { Outlet } from 'react-router';
-import UserNavbar from './components/UserNavbar';
+import { Outlet } from "react-router";
+import UserNavbar from "./components/UserNavbar";
+import UserFooter from "./components/UserFooter";
 
 export default function UserLayout() {
   return (
@@ -13,7 +14,8 @@ export default function UserLayout() {
         <Outlet />
       </main>
 
-      {/* User Footer */}
+      
+      <UserFooter />
     </div>
   );
 }

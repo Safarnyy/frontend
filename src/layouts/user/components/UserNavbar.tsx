@@ -17,11 +17,10 @@ import { cn } from "../../../lib/utils";
 import { useAuth } from "../../../hooks/useAuth";
 
 const navLinks = [
-  { name: "Home", path: "/" },
   { name: "Trips", path: "/trips" },
-  { name: "Destinations", path: "/destinations" },
-  { name: "Bookings", path: "/bookings" },
+  { name: "Packages", path: "/Packages" },
   { name: "Contact", path: "/contact" },
+  { name: "About", path: "/contact" },
 ];
 
 export default function UserNavbar() {
@@ -44,6 +43,17 @@ export default function UserNavbar() {
       setIsTransparent(false);
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden"; // Disable scroll
+    } else {
+      document.body.style.overflow = "auto"; // Enable scroll back
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [mobileOpen]);
 
   // Close mobile menu on outside click
   useEffect(() => {
@@ -99,12 +109,12 @@ export default function UserNavbar() {
                 key={link.path}
                 to={link.path}
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
+                  "px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
                   location.pathname === link.path
-                    ? "text-primary"
+                    ? "bg-[#00B6DE] text-white shadow-sm" 
                     : isTransparent
-                    ? "text-white drop-shadow-sm"
-                    : "text-gray-700"
+                    ? "text-white hover:bg-white/10" 
+                    : "text-gray-700 hover:bg-gray-100" 
                 )}
               >
                 {link.name}
@@ -169,7 +179,7 @@ export default function UserNavbar() {
               ref={toggleRef}
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="md:hidden cursor-pointer"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
               <motion.div
@@ -177,7 +187,11 @@ export default function UserNavbar() {
                 animate={{ rotate: mobileOpen ? 90 : 0 }}
                 transition={{ duration: 0.3 }}
               >
-                {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {mobileOpen ? (
+                  <X className="h-6 w-6 " />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
               </motion.div>
             </Button>
           </div>
@@ -197,35 +211,46 @@ export default function UserNavbar() {
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
-              ref={menuRef}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.25 }}
-              className={cn(
-                "fixed top-14 left-0 w-full z-50 backdrop-blur-md",
-                isTransparent
-                  ? "bg-transparent border-transparent"
-                  : "bg-white border-b border-gray-200 shadow-sm"
-              )}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+              onClick={() => setMobileOpen(false)} // close when clicking outside
             >
-              <div className="flex flex-col items-center py-4 space-y-2">
+              {/* Close Button */}
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="absolute top-[10px] right-18 z-50 p-2 cursor-pointer"
+              >
+                <X className="h-6 w-6 text-gray-700" />
+              </button>
+
+              {/* Menu Card */}
+              <motion.div
+                onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -30, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="absolute top-14 left-1/2 -translate-x-1/2 w-[90%] bg-white rounded-xl shadow-xl p-4 flex flex-col space-y-3"
+              >
                 {navLinks.map((link) => (
                   <Link
                     key={link.path}
                     to={link.path}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      "text-base font-medium hover:text-primary transition",
+                      "w-full text-center py-3 rounded-lg text-lg font-medium transition-all border",
                       location.pathname === link.path
-                        ? "text-primary"
-                        : "text-gray-700"
+                        ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
                     )}
                   >
                     {link.name}
                   </Link>
                 ))}
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
