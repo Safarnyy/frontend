@@ -18,9 +18,9 @@ import AuthModal from "../../../features/user/auth/components/AuthModal";
 
 const navLinks = [
   { name: "Trips", path: "/trips" },
+  { name: "About", path: "/about" },
   { name: "Packages", path: "/Packages" },
   { name: "Contact", path: "/contact" },
-  { name: "About", path: "/contact" },
 ];
 
 export default function UserNavbar() {
