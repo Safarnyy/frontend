@@ -12,9 +12,9 @@ import {
   DropdownMenuItem,
 } from "@radix-ui/react-dropdown-menu";
 import { Button } from "../../../components/ui/Button";
-import LoginModalSideFull from "../../../features/user/auth/components/LoginModalSideFull";
 import { cn } from "../../../lib/utils";
 import { useAuth } from "../../../hooks/useAuth";
+import AuthModal from "../../../features/user/auth/components/AuthModal";
 
 const navLinks = [
   { name: "Trips", path: "/trips" },
@@ -28,7 +28,7 @@ export default function UserNavbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isTransparent, setIsTransparent] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false); // <- using combined modal
 
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -169,7 +169,7 @@ export default function UserNavbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button size="sm" onClick={() => setLoginOpen(true)}>
+              <Button size="sm" onClick={() => setAuthOpen(true)}>
                 Login
               </Button>
             )}
@@ -256,8 +256,8 @@ export default function UserNavbar() {
         </AnimatePresence>
       </nav>
 
-      {/* Top-level Modals */}
-      <LoginModalSideFull isOpen={loginOpen} setIsOpen={setLoginOpen} />
+      {/* Top-level Auth Modal */}
+      <AuthModal isOpen={authOpen} setIsOpen={setAuthOpen} />
     </>
   );
 }
