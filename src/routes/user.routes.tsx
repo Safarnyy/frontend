@@ -3,13 +3,12 @@ import { Route } from 'react-router'
 import { PUBLIC_ROUTES, USER_ROUTES } from '../constants/routes'
 import UserLayout from '../layouts/user/UserLayout'
 import Home from '../features/user/home/pages/Home'
+import AboutPage from '../features/user/about/pages/AboutPage'
+import ContactPage from '../features/user/contact/pages/ContactPage'
+import Trips from '../features/user/trips/pages/Trips'
+import TripDetails from './../features/user/trips/pages/TripDetails';
 
 // === Placeholder components (replace later) ===
-const About = () => <div>About</div>
-const Contact = () => <div>Contact</div>
-const Trips = () => <div>Trips List</div>
-const TripDetails = () => <div>Trip Details</div>
-
 const Login = () => <div>Login</div>
 const Register = () => <div>Register</div>
 const ForgotPassword = () => <div>Forgot Password</div>
@@ -29,8 +28,8 @@ export const userRoutes = (
     <Route path={PUBLIC_ROUTES.HOME} element={<UserLayout />}>
       {/* Public Routes */}
       <Route index element={<Home />} />
-      <Route path={PUBLIC_ROUTES.ABOUT.replace('/', '')} element={<About />} />
-      <Route path={PUBLIC_ROUTES.CONTACT.replace('/', '')} element={<Contact />} />
+      <Route path={PUBLIC_ROUTES.ABOUT.replace('/', '')} element={<AboutPage />} />
+      <Route path={PUBLIC_ROUTES.CONTACT.replace('/', '')} element={<ContactPage />} />
       <Route path={PUBLIC_ROUTES.TRIPS.replace('/', '')} element={<Trips />} />
       <Route path={PUBLIC_ROUTES.TRIP_DETAILS.replace('/', '')} element={<TripDetails />} />
 
