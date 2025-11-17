@@ -3,16 +3,14 @@ import { Route } from "react-router";
 import { PUBLIC_ROUTES, USER_ROUTES } from "../constants/routes";
 import UserLayout from "../layouts/user/UserLayout";
 import Home from "../features/user/home/pages/Home";
-import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
-import GoogleCallbackHandler from "../features/user/auth/components/GoogleCallbackHandler";
-import ProtectedRoute from "../auth/UserProtected";
-
+import HotelDetails from "../features/user/Hotel/components/HotelDetails";
 
 // === Placeholder components (replace later) ===
 const About = () => <div>About</div>;
 const Contact = () => <div>Contact</div>;
 const Trips = () => <div>Trips List</div>;
 const TripDetails = () => <div>Trip Details</div>;
+
 
 
 const Bookings = () => <div>My Bookings</div>;
@@ -36,6 +34,10 @@ export const userRoutes = (
       <Route
         path={PUBLIC_ROUTES.TRIP_DETAILS.replace("/", "")}
         element={<TripDetails />}
+      />
+      <Route
+        path={PUBLIC_ROUTES.HOTEL_DETAILS.replace("/", "")}
+        element={<HotelDetails />}
       />
 
       {/* Auth Routes */}
