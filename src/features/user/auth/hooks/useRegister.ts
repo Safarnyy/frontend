@@ -1,4 +1,3 @@
-// src/features/user/auth/hooks/useRegister.ts
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";

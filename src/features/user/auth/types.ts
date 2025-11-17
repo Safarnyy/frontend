@@ -6,6 +6,8 @@ import type { User } from '../../../context/AuthContext';
  * ---------------------------
  */
 
+import type { User } from "../../../context/AuthContext";
+
 // ✅ Login
 export type LoginRequest = {
   email: string;

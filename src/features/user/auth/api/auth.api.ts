@@ -176,6 +176,7 @@ export const authAPI = {
   register: registerApi,
   verifyEmail: verifyEmailApi,
   login: loginApi,
+  googleLogin,
   logout: logoutApi,
   me: meApi,
   forgotPassword: forgotPasswordApi,
