@@ -18,7 +18,7 @@ import AuthModal from "../../../features/user/auth/components/AuthModal";
 const navLinks = [
   { name: "Trips", path: "/trips" },
   { name: "About", path: "/about" },
-  { name: "Packages", path: "/Packages" },
+  { name: "Packages", path: "/packages" },
   { name: "Contact", path: "/contact" },
 ];
 
