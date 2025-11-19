@@ -1,6 +1,11 @@
 import http from "../../../../lib/axios";
 
-export const sendMessageToBot = async (message: string) => {
-  const res = await http.post("/chatbot", { message });
-  return res.data.reply;
+export type AskFAQResponse = {
+  answer: string;
+  source: string;
+};
+
+export const askFAQ = async (question: string, lang: "en" | "ar" = "en") => {
+  const res = await http.post("/faq/ask", { question, lang });
+  return res.data as AskFAQResponse;
 };
