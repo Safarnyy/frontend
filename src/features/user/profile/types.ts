@@ -1,21 +1,27 @@
 // ==========================
+// User Profile
+// ==========================
+export interface UserProfile {
+  profileImage: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  avatar: string | null;
+  avatarUrl: string | null;
+  createdAt: string;
+}
+
+// ==========================
 // Update Profile Input
 // ==========================
 export interface UpdateProfileInput {
   firstName: string;
   lastName: string;
   email: string;
-  phone?: string;
-  avatar?: File | null;
-}
-
-// ==========================
-// Change Password
-// ==========================
-export interface ChangePasswordInput {
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
+  phone: string;
+  avatar: File | null;
 }
 
 // ==========================
@@ -31,6 +37,15 @@ export interface Trip {
 
 export interface TripsResponse {
   trips: Trip[];
+}
+
+// ==========================
+// Change Password
+// ==========================
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 // ==========================

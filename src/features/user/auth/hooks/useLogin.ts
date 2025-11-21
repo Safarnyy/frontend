@@ -10,7 +10,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router";
 import type { User } from "@/context/AuthContext";
 
-
 export function useLogin(onSuccess?: (user: User) => void) {
   const { login: loginContext } = useAuth();
   const navigate = useNavigate();
@@ -25,22 +24,27 @@ export function useLogin(onSuccess?: (user: User) => void) {
     mutationFn: (values: LoginForm) => authAPI.login(values),
     onSuccess: async (user) => {
       loginContext(user);
+      toast.success(`Welcome${user.firstName ? `, ${user.firstName}` : ""}!`);
       
       // Handle redirection based on user role
       setTimeout(() => {
         switch (user.role) {
           case 'admin':
             navigate('/admin', { replace: true });
+            toast.success('Redirecting to admin dashboard');
             break;
           case 'employee':
+            // Redirect employees to home or employee dashboard
             navigate('/', { replace: true });
+            toast.success('Welcome back!');
             break;
           case 'user':
           default:
             navigate('/', { replace: true });
+            toast.success('Welcome back!');
             break;
         }
-      }, 500);
+      }, 1000);
       
       if (onSuccess) onSuccess(user);
     },

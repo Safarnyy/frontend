@@ -1,22 +1,32 @@
-// src/features/user/profile/components/ProfileInfo.tsx
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useProfile, useUpdateProfile } from "../hooks/useProfile";
-import type { UpdateProfileInput } from "../types";
-import type { User } from "@/context/AuthContext";
+import { FaTrash, FaPen } from "react-icons/fa";
+import {
+  useDeactivateAccount,
+  useProfile,
+  useUpdateProfile,
+} from "../hooks/useProfile";
+import type { UpdateProfileInput, UserProfile } from "../types";
 import ChangePasswordModal from "./ChangePasswordModal";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/Spinner";
+import DeactivateAccountModal from "./DeactivateAccountModal";
+
+import { Button } from "../../../../components/ui/Button";
+import { Input } from "../../../../components/ui/input";
+import { Label } from "../../../../components/ui/label";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../../../components/ui/avatar";
 
 export default function ProfileInfo() {
-  const { data: user, isLoading: isProfileLoading } = useProfile();
+  const { data: user } = useProfile();
   const updateProfile = useUpdateProfile();
+  const { mutate: deactivateAccount } = useDeactivateAccount();
 
   const [editMode, setEditMode] = useState(false);
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
 
   const [form, setForm] = useState<UpdateProfileInput>({
     firstName: "",
@@ -28,272 +38,214 @@ export default function ProfileInfo() {
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  // Reset form when user data loads
   useEffect(() => {
-    if (user) {
-      setForm({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone || "", // Ensure phone is always a string
-        avatar: null,
-      });
-      setImagePreview(user.avatarUrl || null);
-    }
+    if (!user) return;
+    setForm({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone || "",
+      avatar: null,
+    });
+    setImagePreview(null);
   }, [user]);
 
-  const handleChange =
-    (field: keyof UpdateProfileInput) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (field === "avatar") {
-        const file = e.target.files?.[0] || null;
-
-        if (file) {
-          // Validate file type
-          const allowedTypes = [
-            "image/jpeg",
-            "image/jpg",
-            "image/png",
-            "image/gif",
-            "image/webp",
-          ];
-          if (!allowedTypes.includes(file.type)) {
-            toast.error(
-              "Please select a valid image file (JPEG, PNG, GIF, WebP)"
-            );
-            return;
-          }
-
-          // Validate file size (5MB max)
-          const maxSize = 5 * 1024 * 1024;
-          if (file.size > maxSize) {
-            toast.error("Image size must be less than 5MB");
-            return;
-          }
-
-          // Create preview
-          const reader = new FileReader();
-          reader.onload = (ev) => setImagePreview(ev.target?.result as string);
-          reader.readAsDataURL(file);
-
-          setForm((prev) => ({ ...prev, avatar: file }));
-        } else {
-          setImagePreview(user?.avatarUrl || null);
-          setForm((prev) => ({ ...prev, avatar: null }));
-        }
-      } else {
-        setForm((prev) => ({ ...prev, [field]: e.target.value }));
-      }
-    };
-
-  const handleSaveProfile = () => {
-    if (!user) return;
-
-    // Basic validation
-    if (!form.firstName.trim() || !form.lastName.trim()) {
-      toast.error("First name and last name are required");
-      return;
-    }
-
-    // Prepare update data - phone is now guaranteed to be a string
-    const updateData: Partial<UpdateProfileInput> = {
-      firstName: form.firstName.trim(),
-      lastName: form.lastName.trim(),
-      phone: form.phone ? form.phone.trim() : undefined, // No need for undefined check now
-    };
-
-    // Only include avatar if it's a new file
-    if (form.avatar instanceof File) {
-      updateData.avatar = form.avatar;
-    }
-
-    updateProfile.mutate(updateData, {
-      onSuccess: () => {
-        setEditMode(false);
-        // Reset the avatar preview to the updated user data
-        if (user) {
-          setImagePreview(user.avatarUrl || null);
-        }
-      },
-      onError: (error) => {
-        toast.error(error.message || "Failed to update profile");
-        // Keep the form in edit mode on error
-      },
+  const autoSave = (newData: Partial<UpdateProfileInput>) => {
+    updateProfile.mutate(newData, {
+      onSuccess: () => toast.success("Profile updated"),
+      onError: (err: Error) => toast.error(err.message),
     });
   };
 
-  const handleCancelEdit = () => {
-    if (user) {
-      setForm({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone || "", // Ensure phone is always a string
-        avatar: null,
-      });
-      setImagePreview(user.avatarUrl || null);
-    }
-    setEditMode(false);
+  const handleFieldChange =
+    (field: keyof UpdateProfileInput) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+  const handleFieldBlur = (field: keyof UpdateProfileInput) => () => {
+    autoSave({ [field]: form[field] });
   };
 
-  const getInitials = (user: User) =>
-    `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (!file) return;
 
-  if (isProfileLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-64">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
+    const allowed = ["image/jpeg", "image/png", "image/jpg"];
+    if (!allowed.includes(file.type)) {
+      toast.error("Only JPG or PNG images allowed");
+      return;
+    }
 
-  if (!user) {
-    return (
-      <div className="text-center text-gray-500 min-h-64 flex items-center justify-center">
-        Failed to load profile data
-      </div>
+    const reader = new FileReader();
+    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+
+    setForm((prev) => ({ ...prev, avatar: file }));
+    toast.info("Uploading image…");
+
+    updateProfile.mutate(
+      { avatar: file },
+      {
+        onSuccess: () => toast.success("Profile picture updated!"),
+        onError: (err) => toast.error(err.message),
+      }
     );
-  }
+  };
+
+  const handleRemoveAvatar = () => {
+    setImagePreview(null);
+    toast.info("Removing picture…");
+
+    updateProfile.mutate(
+      { avatar: null },
+      {
+        onSuccess: () => toast.success("Profile picture removed"),
+        onError: (err) => toast.error(err.message),
+      }
+    );
+  };
+
+  const getInitials = (u: UserProfile) =>
+    `${u.firstName.charAt(0)}${u.lastName.charAt(0)}`.toUpperCase();
+
+  const toggleEdit = () => {
+    if (editMode) toast.success("Changes saved");
+    else toast.info("You can now edit your profile");
+    setEditMode(!editMode);
+  };
+
+  if (!user) return null;
 
   return (
-    <div className="space-y-10 mt-10 max-w-3xl">
+    <div className="space-y-2 mt-14 max-w-3xl mx-auto">
       {/* Avatar Section */}
-      <div className="flex items-center gap-6 p-6 rounded-xl border bg-white shadow-sm">
-        <div className="relative">
-          <Avatar className="w-24 h-24 shadow-md">
-            <AvatarImage
-              src={imagePreview || user.avatarUrl || undefined}
-              alt={`${user.firstName} ${user.lastName}`}
-            />
-            <AvatarFallback className="text-xl font-semibold bg-blue-100 text-blue-600">
-              {getInitials(user)}
-            </AvatarFallback>
+      <div className="p-6 rounded-xl border bg-white shadow-sm">
+        <h2 className="text-lg font-semibold mb-4">Profile Picture</h2>
+        <div className="flex flex-col items-center space-y-4">
+          <Avatar className="w-32 h-32 shadow border cursor-pointer">
+            <AvatarImage src={imagePreview || user.avatarUrl || undefined} />
+            <AvatarFallback>{getInitials(user)}</AvatarFallback>
           </Avatar>
-          {updateProfile.isPending && (
-            <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-              <Spinner size="sm" className="text-white" />
-            </div>
+
+          {editMode && (
+            <>
+              <input
+                id="profile-image"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="hidden cursor-pointer"
+              />
+              <div className="flex gap-4">
+                <button
+                  onClick={() =>
+                    document.getElementById("profile-image")?.click()
+                  }
+                  className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
+                >
+                  <FaPen /> Edit
+                </button>
+
+                {(imagePreview || user.avatarUrl) && (
+                  <button
+                    onClick={handleRemoveAvatar}
+                    className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition cursor-pointer"
+                  >
+                    <FaTrash /> Delete
+                  </button>
+                )}
+              </div>
+            </>
           )}
         </div>
-
-        {editMode && (
-          <div className="space-y-2">
-            <label
-              htmlFor="profile-image"
-              className="px-4 py-2 rounded-md cursor-pointer bg-gray-100 hover:bg-gray-200 border text-sm font-medium transition-colors"
-            >
-              Choose Profile Image
-            </label>
-            <input
-              id="profile-image"
-              type="file"
-              accept="image/*"
-              onChange={handleChange("avatar")}
-              className="hidden"
-              disabled={updateProfile.isPending}
-            />
-            {form.avatar && (
-              <p className="text-sm text-green-600">
-                New image selected: {form.avatar.name}
-              </p>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Profile Form */}
       <div className="p-6 rounded-xl border bg-white shadow-sm space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="firstName">First Name *</Label>
-            <Input
-              id="firstName"
-              disabled={!editMode || updateProfile.isPending}
-              value={form.firstName}
-              onChange={handleChange("firstName")}
-              placeholder="Enter your first name"
-              className={!editMode ? "bg-gray-50" : ""}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="lastName">Last Name *</Label>
-            <Input
-              id="lastName"
-              disabled={!editMode || updateProfile.isPending}
-              value={form.lastName}
-              onChange={handleChange("lastName")}
-              placeholder="Enter your last name"
-              className={!editMode ? "bg-gray-50" : ""}
-            />
-          </div>
-
-          <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              disabled
-              value={form.email}
-              className="bg-gray-50 cursor-not-allowed"
-            />
-            <p className="text-sm text-gray-500">Email cannot be changed</p>
-          </div>
-
-          <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input
-              id="phone"
-              disabled={!editMode || updateProfile.isPending}
-              value={form.phone}
-              onChange={handleChange("phone")}
-              placeholder="Enter your phone number"
-              className={!editMode ? "bg-gray-50" : ""}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t">
-          <Button
-            variant="outline"
-            onClick={() => setOpenPasswordModal(true)}
-            disabled={updateProfile.isPending}
-          >
-            Change Password
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Profile Information</h2>
+          <Button onClick={toggleEdit} className="cursor-pointer">
+            {editMode ? "Save Changes" : "Edit Profile"}
           </Button>
-
-          {!editMode ? (
-            <Button onClick={() => setEditMode(true)}>Edit Profile</Button>
-          ) : (
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={handleCancelEdit}
-                disabled={updateProfile.isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSaveProfile}
-                disabled={
-                  updateProfile.isPending ||
-                  !form.firstName.trim() ||
-                  !form.lastName.trim()
-                }
-              >
-                {updateProfile.isPending ? (
-                  <Spinner size="sm" />
-                ) : (
-                  "Save Changes"
-                )}
-              </Button>
-            </div>
-          )}
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label>First Name</Label>
+            <Input
+              disabled={!editMode}
+              value={form.firstName}
+              onChange={handleFieldChange("firstName")}
+              onBlur={handleFieldBlur("firstName")}
+              className="cursor-text"
+            />
+          </div>
+
+          <div>
+            <Label>Last Name</Label>
+            <Input
+              disabled={!editMode}
+              value={form.lastName}
+              onChange={handleFieldChange("lastName")}
+              onBlur={handleFieldBlur("lastName")}
+              className="cursor-text"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <Label>Email</Label>
+            <Input disabled value={form.email} className="bg-gray-100 cursor-not-allowed" />
+          </div>
+
+          <div className="md:col-span-2">
+            <Label>Phone</Label>
+            <Input
+              disabled={!editMode}
+              value={form.phone}
+              onChange={handleFieldChange("phone")}
+              onBlur={handleFieldBlur("phone")}
+              className="cursor-text"
+            />
+          </div>
+        </div>
+
+        <Button
+          variant="outline"
+          onClick={() => setOpenPasswordModal(true)}
+          className="cursor-pointer"
+        >
+          Change Password
+        </Button>
       </div>
 
+      {/* Modals */}
       <ChangePasswordModal
         open={openPasswordModal}
         onOpenChange={setOpenPasswordModal}
+      />
+
+      {/* Danger Zone */}
+      <div className="p-6 rounded-xl border bg-red-50 shadow-sm space-y-4">
+        <h2 className="text-lg font-semibold text-red-700">Danger Zone</h2>
+        <p className="text-red-600">
+          Be careful with these actions. They cannot be undone easily.
+        </p>
+        <div className="flex flex-col md:flex-row gap-4 text-white">
+          <Button
+            variant="destructive"
+            onClick={() => setOpenDeactivateModal(true)}
+            className="cursor-pointer"
+          >
+            Deactivate Account
+          </Button>
+        </div>
+      </div>
+
+      <DeactivateAccountModal
+        open={openDeactivateModal}
+        onOpenChange={setOpenDeactivateModal}
+        onConfirm={() => deactivateAccount()}
       />
     </div>
   );
