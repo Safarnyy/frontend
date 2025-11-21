@@ -35,8 +35,9 @@ export const USER_ROUTES = {
 // Admin Routes
 // =====================
 export const ADMIN_ROUTES = {
-  ROOT: "/admin",
-  DASHBOARD: "/admin/dashboard",
+  ROOT: '/admin',
+  DASHBOARD: '/admin/dashboard',
+  PROFILE: '/admin/profile',
 
   DESTINATIONS: "/admin/destinations",
   ADD_DESTINATION: "/admin/destinations/add",
@@ -56,10 +57,10 @@ export const ADMIN_ROUTES = {
   ADD_TRIP: "/admin/trips/add",
   EDIT_TRIP: (id: string = ":id") => `/admin/trips/edit/${id}`,
 
-  BOOKINGS: "/admin/bookings",
-  BOOKING_DETAILS: (id: string = ":id") => `/admin/bookings/${id}`,
-
-  USERS: "/admin/users",
-  REPORTS: "/admin/reports",
-  SETTINGS: "/admin/settings",
+  USERS: '/admin/users',
+  ADD_USER: '/admin/users/add',
+  EDIT_USER: (id: string = ':id') => `/admin/users/edit/${id}`,
+  BOOKINGS: '/admin/bookings',
+  REPORTS: '/admin/reports',
+  SETTINGS: '/admin/settings',
 } as const;
