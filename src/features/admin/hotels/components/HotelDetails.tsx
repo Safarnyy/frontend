@@ -13,6 +13,7 @@ import {
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 import { MapPreview } from "./MapPreview";
 import { RoomTypesSection } from "./RoomTypes";
+import { Spinner } from "@/components/ui/Spinner";
 
 export default function HotelDetails() {
     const { id } = useParams();
@@ -37,7 +38,7 @@ export default function HotelDetails() {
     if (isLoading)
         return (
             <PageContainer>
-                <p>Loading hotel...</p>
+                <Spinner />
             </PageContainer>
         );
 

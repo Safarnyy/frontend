@@ -10,6 +10,7 @@ import {
   useTransportationByIdQuery,
 } from '../hooks/useTransportations';
 import type { UpdateTransportationDto } from '../types/transportation.type';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function EditTransportation() {
   const { id } = useParams();
@@ -34,7 +35,7 @@ export default function EditTransportation() {
   if (isLoading || !transportation) {
     return (
       <PageContainer>
-        <p>Loading transportation...</p>
+        <Spinner />
       </PageContainer>
     );
   }

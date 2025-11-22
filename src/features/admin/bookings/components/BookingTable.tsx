@@ -25,6 +25,7 @@ import http from "@/lib/axios";
 import { toast } from "sonner";
 import type { Booking } from "../types/booking.type";
 import { CheckCircle, Trash2 } from "lucide-react";
+import { Spinner } from "@/components/ui/Spinner";
 
 export default function BookingTable() {
   const [page, setPage] = useState(1);
@@ -84,8 +85,8 @@ export default function BookingTable() {
             status === "cancelled"
               ? "bg-red-100 text-red-700"
               : status === "pending"
-              ? "bg-yellow-100 text-yellow-700"
-              : "bg-green-100 text-green-700";
+                ? "bg-yellow-100 text-yellow-700"
+                : "bg-green-100 text-green-700";
 
           return (
             <span
@@ -105,8 +106,8 @@ export default function BookingTable() {
             status === "cancelled"
               ? "bg-red-100 text-red-700"
               : status === "pending"
-              ? "bg-yellow-100 text-yellow-700"
-              : "bg-green-100 text-green-700";
+                ? "bg-yellow-100 text-yellow-700"
+                : "bg-green-100 text-green-700";
 
           return (
             <span
@@ -184,7 +185,7 @@ export default function BookingTable() {
 
           <div className="overflow-x-auto rounded-xl border shadow-sm">
             {isLoading ? (
-              <div className="p-4 text-center">Loading bookings...</div>
+              <Spinner />
             ) : (
               <Table>
                 <TableHeader>

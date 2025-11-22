@@ -14,6 +14,7 @@ import {
 } from '../hooks/useHotels';
 import type { Hotel } from '../types/hotel.type';
 import useDebounce from '@/hooks/useDebounce';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function HotelList() {
     const [page, setPage] = useState(1);
@@ -76,7 +77,7 @@ export default function HotelList() {
                 {/* Hotels Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-auto flex-1 pb-24">
                     {isLoading ? (
-                        <p>Loading hotels...</p>
+                        <Spinner/>
                     ) : data?.data.length ? (
                         data.data.map((hotel) => (
                             <div

@@ -1,4 +1,3 @@
-// src/routes/user.routes.tsx
 /* eslint-disable react-refresh/only-export-components */
 import { Route } from "react-router";
 import { PUBLIC_ROUTES, USER_ROUTES } from "../constants/routes";
@@ -12,8 +11,8 @@ import HotelDetails from "../features/user/Hotel/components/HotelDetails";
 import GoogleCallbackHandler from "./../features/user/auth/components/GoogleCallbackHandler";
 import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
 import PackagesPage from "../features/user/Packages/Pages/PackagePage";
-// import UserProtectedRoute from "@/auth/UserProtectedRoute";
 import PackageDetails from "@/features/user/Packages/Pages/PackageDetails";
+import UserProtectedRoute from "../auth/UserProtectedRoute";
 
 const Bookings = () => <div>My Bookings</div>;
 const BookingDetails = () => <div>Booking Details</div>;
@@ -24,14 +23,14 @@ const Recommendations = () => <div>AI Trip Recommendations</div>;
 
 export const userRoutes = (
   <>
-    {/* Public Layout - No protection for public routes */}
+    {/* Public Layout - Accessible to all non-admin users */}
     <Route
       path={PUBLIC_ROUTES.HOME}
       element={
         <UserLayout />
       }
     >
-      {/* Public Routes - Accessible to everyone */}
+      {/* Public Routes - Accessible to everyone (guests and logged-in users) */}
       <Route index element={<Home />} />
       <Route
         path={PUBLIC_ROUTES.ABOUT.replace("/", "")}
@@ -69,31 +68,59 @@ export const userRoutes = (
       {/* 🔒 Protected User Routes - Only for authenticated non-admin users */}
       <Route
         path={USER_ROUTES.PROFILE.replace("/", "")}
-        element={<ProfileDashboard />}
+        element={
+          <UserProtectedRoute>
+            <ProfileDashboard />
+          </UserProtectedRoute>
+        }
       />
       <Route
         path={USER_ROUTES.BOOKINGS.replace("/", "")}
-        element={<Bookings />}
+        element={
+          <UserProtectedRoute>
+            <Bookings />
+          </UserProtectedRoute>
+        }
       />
       <Route
         path={USER_ROUTES.BOOKING_DETAILS.replace("/", "")}
-        element={<BookingDetails />}
+        element={
+          <UserProtectedRoute>
+            <BookingDetails />
+          </UserProtectedRoute>
+        }
       />
       <Route
         path={USER_ROUTES.PAYMENTS.replace("/", "")}
-        element={<Payments />}
+        element={
+          <UserProtectedRoute>
+            <Payments />
+          </UserProtectedRoute>
+        }
       />
       <Route
         path={USER_ROUTES.REVIEWS.replace("/", "")}
-        element={<Reviews />}
+        element={
+          <UserProtectedRoute>
+            <Reviews />
+          </UserProtectedRoute>
+        }
       />
       <Route
         path={USER_ROUTES.AI_ASSISTANT.replace("/", "")}
-        element={<AIAssistant />}
+        element={
+          <UserProtectedRoute>
+            <AIAssistant />
+          </UserProtectedRoute>
+        }
       />
       <Route
         path={USER_ROUTES.RECOMMENDATIONS.replace("/", "")}
-        element={<Recommendations />}
+        element={
+          <UserProtectedRoute>
+            <Recommendations />
+          </UserProtectedRoute>
+        }
       />
     </Route>
   </>

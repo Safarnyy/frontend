@@ -28,6 +28,7 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import useDebounce from '@/hooks/useDebounce';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function TransportationTable() {
     const [page, setPage] = useState(1);
@@ -36,7 +37,7 @@ export default function TransportationTable() {
 
     const debouncedSearchTerm = useDebounce(search, 300);
 
-    const { data } = usePaginatedTransportationsQuery({
+    const { data, isLoading } = usePaginatedTransportationsQuery({
         page,
         limit,
         keyword: debouncedSearchTerm,
@@ -122,6 +123,15 @@ export default function TransportationTable() {
         columns,
         getCoreRowModel: getCoreRowModel(),
     });
+
+    if (isLoading) {
+        return (
+            <PageContainer>
+                <Spinner />
+            </PageContainer>
+        )
+    }
+
 
     return (
         <PageContainer>
