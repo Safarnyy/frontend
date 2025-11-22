@@ -13,11 +13,12 @@ import HotelDetailsPage from '@/features/admin/hotels/pages/HotelDetailsPage';
 import AddHotelPage from '@/features/admin/hotels/pages/AddHotelPage';
 import EditHotelPage from '@/features/admin/hotels/pages/EditHotelPage';
 import TripsPage from '@/features/admin/trips/pages/TripPage';
+import TripDetailsPage from '@/features/admin/trips/pages/TripDetailsPage';
+import AddTripPage from '@/features/admin/trips/pages/AddTripPage';
+import EditTripPage from '@/features/admin/trips/pages/EditTripPage';
 
 // Placeholder components
 const Dashboard = () => <div>Admin Dashboard</div>;
-const AddTrip = () => <div>Add Trip</div>;
-const EditTrip = () => <div>Edit Trip</div>;
 
 
 const Users = () => <div>Users</div>;
@@ -78,8 +79,9 @@ export const adminRoutes = (
 
       {/* Trips */}
       <Route path={relative(ADMIN_ROUTES.TRIPS)} element={<TripsPage />} />
-      <Route path={relative(ADMIN_ROUTES.ADD_TRIP)} element={<AddTrip />} />
-      <Route path={relative(ADMIN_ROUTES.EDIT_TRIP())} element={<EditTrip />} />
+      <Route path={relative(ADMIN_ROUTES.TRIP_DETAILS())} element={<TripDetailsPage />} />
+      <Route path={relative(ADMIN_ROUTES.ADD_TRIP)} element={<AddTripPage />} />
+      <Route path={relative(ADMIN_ROUTES.EDIT_TRIP())} element={<EditTripPage />} />
 
 
 

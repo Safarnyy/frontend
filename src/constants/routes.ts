@@ -3,18 +3,18 @@
 
 // =====================
 export const PUBLIC_ROUTES = {
-  HOME: "/",
-  ABOUT: "/about",
-  CONTACT: "/contact",
-  TRIPS: "/trips",
-  TRIP_DETAILS: "/trips/:id",
-  HOTEL_DETAILS: "/HotelDetails/:id",
-  PACKAGE: "/packages",
-  LOGIN: "/login",
-  REGISTER: "/register",
-  FORGOT_PASSWORD: "/forgot-password",
-  VERIFY_RESET_CODE: "/verify-reset-code",
-  RESET_PASSWORD: "/reset-password",
+  HOME: '/',
+  ABOUT: '/about',
+  CONTACT: '/contact',
+  TRIPS: '/trips',
+  TRIP_DETAILS: '/trips/:id',
+  HOTEL_DETAILS: '/HotelDetails/:id',
+  PACKAGE: '/packages',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  FORGOT_PASSWORD: '/forgot-password',
+  VERIFY_RESET_CODE: '/verify-reset-code',
+  RESET_PASSWORD: '/reset-password',
 } as const;
 
 // =====================
@@ -53,6 +53,7 @@ export const ADMIN_ROUTES = {
   EDIT_HOTEL: (id: string = ':id') => `/admin/hotels/edit/${id}`,
 
   TRIPS: '/admin/trips',
+  TRIP_DETAILS: (id: string = ':id') => `/admin/trips/${id}`,
   ADD_TRIP: '/admin/trips/add',
   EDIT_TRIP: (id: string = ':id') => `/admin/trips/edit/${id}`,
 

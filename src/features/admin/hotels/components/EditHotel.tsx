@@ -61,12 +61,14 @@ export default function EditHotel() {
                     description: hotel.description,
                     stars: hotel.stars,
                     propertyHighlights: hotel.propertyHighlights,
-                    imageCover: hotel.imageCoverUrl,
-                    images: hotel.imagesUrls,
+                    location: hotel.location,
+                    imageCoverUrl: hotel.imageCoverUrl, // <- here
+                    imagesUrls: hotel.imagesUrls,       // <- and here
                 }}
                 onSubmit={handleSubmit}
                 isLoading={editMutation.isPending}
             />
+
 
             <BackButton />
         </PageContainer>
