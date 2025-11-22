@@ -108,7 +108,6 @@ export default function TripsList() {
                             </Button>
                         </Link>
                     </div>
-
                 </div>
 
                 {/* Trips Grid */}

@@ -6,15 +6,13 @@ import type { User } from '../../../context/AuthContext';
  * ---------------------------
  */
 
-import type { User } from "../../../context/AuthContext";
-
-// ✅ Login
+//  Login
 export type LoginRequest = {
   email: string;
   password: string;
 };
 
-// ✅ Register (Signup)
+//  Register (Signup)
 export type RegisterRequest = {
   firstName: string;
   lastName: string;
@@ -22,24 +20,24 @@ export type RegisterRequest = {
   password: string;
 };
 
-// ✅ Verify Email
+//  Verify Email
 export type VerifyEmailRequest = {
   email: string;
   verifyCode: string;
 };
 
-// ✅ Forgot Password
+//  Forgot Password
 export type ForgotPasswordRequest = {
   email: string;
 };
 
-// ✅ Verify Reset Code
+//  Verify Reset Code
 export type VerifyResetCodeRequest = {
   email: string;
   resetCode: string;
 };
 
-// ✅ Reset Password
+//  Reset Password
 export type ResetPasswordRequest = {
   email: string;
   newPassword: string;
@@ -47,16 +45,27 @@ export type ResetPasswordRequest = {
 
 /**
  * ---------------------------
- * 🔹 RESPONSE TYPES
+ *  RESPONSE TYPES
  * ---------------------------
  */
 
-// ✅ Backend response format
+//  Backend response format
 export type ApiSuccess<T = unknown> = {
   status: string;
   message?: string;
   data?: T;
 };
 
-// ✅ Auth response with user data
+//  Auth response with user data
 export type AuthResponse = ApiSuccess<User>;
+
+
+export interface ReactivatePayload {
+  email: string;
+  password: string;
+}
+
+export type ReactivationState = {
+  isOpen: boolean;
+  userEmail: string;
+};

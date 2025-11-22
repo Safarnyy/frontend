@@ -69,7 +69,6 @@ export default function EditHotel() {
                 isLoading={editMutation.isPending}
             />
 
-
             <BackButton />
         </PageContainer>
     );

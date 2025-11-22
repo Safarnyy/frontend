@@ -12,7 +12,6 @@ const RESOURCE = '/trips';
 // ---------------------------------------------------------
 // GET paginated trips
 // ---------------------------------------------------------
-// api/trips.ts (or wherever)
 export const fetchPaginatedTrips = async (
   page = 1,
   limit = 10,

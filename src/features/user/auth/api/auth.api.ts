@@ -8,6 +8,7 @@ import type {
   ResetPasswordRequest,
   AuthResponse,
   ApiSuccess,
+  ReactivatePayload,
 } from "../types";
 
 http.defaults.withCredentials = true;
@@ -27,7 +28,7 @@ function formatError(e: unknown): Error {
   return new Error("Network error");
 }
 
-// ✅ Register
+//  Register
 export async function registerApi(
   payload: RegisterRequest
 ): Promise<ApiSuccess> {
@@ -39,7 +40,7 @@ export async function registerApi(
   }
 }
 
-// ✅ Verify Email
+//  Verify Email
 export async function verifyEmailApi(
   email: string,
   verifyCode: string
@@ -55,7 +56,7 @@ export async function verifyEmailApi(
   }
 }
 
-// ✅ Login
+//  Login
 export async function loginApi(credentials: LoginRequest): Promise<User> {
   try {
     const { data } = await http.post<AuthResponse>("/auth/login", credentials);
@@ -65,7 +66,7 @@ export async function loginApi(credentials: LoginRequest): Promise<User> {
   }
 }
 
-// ✅ Logout
+//  Logout
 export async function logoutApi(): Promise<void> {
   try {
     await http.post("/auth/logout");
@@ -74,7 +75,7 @@ export async function logoutApi(): Promise<void> {
   }
 }
 
-// ✅ Get Current User
+//  Get Current User
 export async function meApi(): Promise<User> {
   try {
     const { data } = await http.get<AuthResponse>("/users/profile");
@@ -84,7 +85,7 @@ export async function meApi(): Promise<User> {
   }
 }
 
-// ✅ Forgot password
+//  Forgot password
 export async function forgotPasswordApi(
   payload: ForgotPasswordRequest
 ): Promise<ApiSuccess> {
@@ -99,7 +100,7 @@ export async function forgotPasswordApi(
   }
 }
 
-// ✅ Verify reset code
+//  Verify reset code
 export async function verifyResetCodeApi(
   payload: VerifyResetCodeRequest
 ): Promise<ApiSuccess> {
@@ -114,7 +115,7 @@ export async function verifyResetCodeApi(
   }
 }
 
-// ✅ Reset password
+//  Reset password
 export async function resetPasswordApi(
   payload: ResetPasswordRequest
 ): Promise<User> {
@@ -139,7 +140,7 @@ export async function googleLogin() {
   }
 }
 
-// ✅ Check if user is authenticated
+//  Check if user is authenticated
 export async function checkAuthStatus(): Promise<User | null> {
   try {
     const user = await meApi();
@@ -150,7 +151,7 @@ export async function checkAuthStatus(): Promise<User | null> {
   }
 }
 
-// ✅ Handle Google OAuth with credential
+//  Handle Google OAuth with credential
 export async function googleLoginWithCredential(credential: string): Promise<User> {
   try {
     const { data } = await http.post<AuthResponse>("/auth/google/callback", { credential });
@@ -160,7 +161,7 @@ export async function googleLoginWithCredential(credential: string): Promise<Use
   }
 }
 
-// ✅ Handle Google OAuth callback - check if user is authenticated
+//  Handle Google OAuth callback - check if user is authenticated
 export async function handleGoogleCallback(): Promise<User> {
   try {
     // After Google OAuth redirect, check if user is authenticated
@@ -172,6 +173,23 @@ export async function handleGoogleCallback(): Promise<User> {
   }
 }
 
+
+//  Reactivate account
+export async function reactivateAccountApi(payload: ReactivatePayload): Promise<{ user: User; token?: string }> {
+  try {
+    const { data } = await http.post<AuthResponse>("/users/activateAccount", payload);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return { user: data.data, token: (data as any).token };
+    /**
+     * Type 'User | undefined' is not assignable to type 'User'.
+  Type 'undefined' is not assignable to type 'User'.ts(2322)
+auth.api.ts(178, 83): The expected type comes from property 'user' which is declared here on type '{ user: User; token?: string | undefined; }'
+     */
+  } catch (err) {
+    throw formatError(err);
+  }
+}
+
 export const authAPI = {
   register: registerApi,
   verifyEmail: verifyEmailApi,
@@ -179,6 +197,7 @@ export const authAPI = {
   googleLogin,
   logout: logoutApi,
   me: meApi,
+  reactivateAccount: reactivateAccountApi,
   forgotPassword: forgotPasswordApi,
   verifyResetCode: verifyResetCodeApi,
   resetPassword: resetPasswordApi,
