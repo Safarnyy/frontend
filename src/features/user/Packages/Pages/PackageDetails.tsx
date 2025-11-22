@@ -5,7 +5,16 @@ import usePackage from "../hook/usePackage";
 import { useHotel } from "../../Hotel/hook/useHotel";
 import HotelCard from "../../Hotel/components/HotelCard";
 import BookingModal from "../../booking/components/BookingModal";
-import { FaExclamationTriangle, FaDollarSign, FaClock, FaMapMarkerAlt, FaInfoCircle, FaRoute, FaHotel, FaBook } from "react-icons/fa";
+import {
+  FaExclamationTriangle,
+  FaDollarSign,
+  FaClock,
+  FaMapMarkerAlt,
+  FaInfoCircle,
+  FaRoute,
+  FaHotel,
+  FaBook,
+} from "react-icons/fa";
 
 export default function PackageDetails() {
   const { id } = useParams<{ id: string }>();
@@ -168,15 +177,21 @@ export default function PackageDetails() {
       </div>
 
       {/* Pickup Locations */}
-      <div className="mb-6">
+      <div className="bg-white p-6 mt-6 rounded-xl shadow-md border border-gray-100">
         <h3 className="text-xl font-semibold mb-1 flex items-center gap-2">
           <FaMapMarkerAlt /> Pick-up Locations:
         </h3>
-        <ul className="ml-4 list-disc">
+        <ul className="ml-4 list-disc space-y-1 text-gray-700">
           {pkg.pickupLocations.map((pickup, idx) => (
             <li key={idx}>
-              {pickup.city} - {pickup.place} at {pickup.time}{" "}
-              {pickup.priceAdjustment ? `(+${pickup.priceAdjustment} EGP)` : ""}
+              <span className="font-medium">{pickup.city}</span> -{" "}
+              {pickup.place} at{" "}
+              <span className="font-semibold">{pickup.time}</span>{" "}
+              {pickup.priceAdjustment ? (
+                <span className="text-green-600 font-medium">
+                  (+{pickup.priceAdjustment} EGP)
+                </span>
+              ) : null}
             </li>
           ))}
         </ul>

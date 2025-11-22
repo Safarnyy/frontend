@@ -56,7 +56,7 @@ export default function BestPackages() {
                 </div>
 
                 <div className="p-5 space-y-3 flex flex-col justify-center">
-                  <h3 className="text-xl font-semibold text-gray-800">
+                  <h3 className="text-xl font-semibold text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">
                     {pack.title}
                   </h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
