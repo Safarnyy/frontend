@@ -36,8 +36,6 @@ export function AdminSidebar({
     },
     { label: 'Hotels', to: ADMIN_ROUTES.HOTELS, icon: <Hotel size={18} /> },
     { label: 'Trips', to: ADMIN_ROUTES.TRIPS, icon: <Plane size={18} /> },
-    { label: "Hotels", to: ADMIN_ROUTES.HOTELS, icon: <Hotel size={18} /> },
-    { label: "Trips", to: ADMIN_ROUTES.TRIPS, icon: <Plane size={18} /> },
     { label: 'Users', to: ADMIN_ROUTES.USERS, icon: <Users size={18} /> },
     {
       label: "Bookings",
@@ -66,21 +64,6 @@ export function AdminSidebar({
           md:translate-x-0
         `}
       >
-        {/* <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <div className="bg-linear-to-br from-blue-500 to-indigo-600 text-white p-2 rounded-xl shadow-sm">
-              <Plane size={20} />
-            </div>
-            <h1 className="text-xl font-bold text-blue-600 tracking-wide">
-              Safarni
-            </h1>
-          </div>
-
-          <button className="md:hidden" onClick={onClose}>
-            <X size={22} />
-          </button>
-        </div> */}
-
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="bg-blue-500/10 border border-blue-500/40 text-blue-600 p-2 rounded-full">
@@ -88,7 +71,7 @@ export function AdminSidebar({
             </div>
 
             <div className="flex flex-col leading-tight">
-              <span className="text-xl font-extrabold">Safarni</span>
+              <span className="text-xl font-extrabold">Safarny</span>
               <span className="text-xs text-muted-foreground font-medium tracking-wide">
                 Admin Panel
               </span>

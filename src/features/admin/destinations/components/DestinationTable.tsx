@@ -29,6 +29,7 @@ import {
 import type { Destination } from '../types/destination.type';
 import { DeleteConfirmationDialog } from '@/components/admin/DeleteConfirmationDialog';
 import useDebounce from '@/hooks/useDebounce';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function DestinationTable() {
   const [page, setPage] = useState(1);
@@ -38,7 +39,7 @@ export default function DestinationTable() {
   const debouncedSearchTerm = useDebounce(search, 300);
 
 
-  const { data } = usePaginatedDestinationsQuery({
+  const { data, isLoading } = usePaginatedDestinationsQuery({
     page,
     limit,
     keyword: debouncedSearchTerm,
@@ -127,6 +128,14 @@ export default function DestinationTable() {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (isLoading) {
+    return (
+      <PageContainer>
+        <Spinner />
+      </PageContainer>
+    )
+  }
 
   return (
     <PageContainer>

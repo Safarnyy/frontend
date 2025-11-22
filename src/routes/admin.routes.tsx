@@ -1,5 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import { Route } from 'react-router';
+import { Navigate, Route } from 'react-router';
 import { ADMIN_ROUTES } from '../constants/routes';
 import AdminLayout from '../layouts/admin/AdminLayout';
 import DestinationsPage from '@/features/admin/destinations/pages/DestinationsPage';
@@ -16,15 +15,13 @@ import TripsPage from '@/features/admin/trips/pages/TripPage';
 import TripDetailsPage from '@/features/admin/trips/pages/TripDetailsPage';
 import AddTripPage from '@/features/admin/trips/pages/AddTripPage';
 import EditTripPage from '@/features/admin/trips/pages/EditTripPage';
+import BookingsPage from '@/features/admin/bookings/pages/BookingsPage';
+import BookingDetailsPage from '@/features/admin/bookings/pages/BookingDetailsPage';
+import UsersPage from '@/features/admin/users/pages/UsersPage';
+import AddUserPage from '@/features/admin/users/pages/AddUserPage';
+import EditUserPage from '@/features/admin/users/pages/EditUserPage';
+import DashboardPage from '@/features/admin/dashboard/pages/DashboardPage';
 
-// Placeholder components
-const Dashboard = () => <div>Admin Dashboard</div>;
-
-
-const Users = () => <div>Users</div>;
-const Bookings = () => <div>Bookings</div>;
-const Reports = () => <div>Reports</div>;
-const Settings = () => <div>Settings</div>;
 
 // Helper to convert `/admin/trips` → `trips`
 const relative = (path: string) => path.replace(`${ADMIN_ROUTES.ROOT}/`, '');
@@ -32,9 +29,11 @@ const relative = (path: string) => path.replace(`${ADMIN_ROUTES.ROOT}/`, '');
 export const adminRoutes = (
   <>
     <Route path={ADMIN_ROUTES.ROOT} element={<AdminLayout />}>
-      {/* Dashboard */}
-      <Route path={relative(ADMIN_ROUTES.DASHBOARD)} element={<Dashboard />} />
+      {/* Redirect /admin → /admin/dashboard */}
+      <Route index element={<Navigate to={ADMIN_ROUTES.DASHBOARD} replace />} />
 
+      {/* Dashboard */}
+      <Route path={relative(ADMIN_ROUTES.DASHBOARD)} element={<DashboardPage />} />
       {/* Destinations */}
       <Route
         path={relative(ADMIN_ROUTES.DESTINATIONS)}
@@ -85,12 +84,18 @@ export const adminRoutes = (
 
 
 
+      {/* Bookings */}
+      <Route path={relative(ADMIN_ROUTES.BOOKINGS)} element={<BookingsPage />} />
+      <Route path={relative(ADMIN_ROUTES.BOOKING_DETAILS())} element={<BookingDetailsPage />} />
 
-      {/* Others */}
-      <Route path={relative(ADMIN_ROUTES.USERS)} element={<Users />} />
-      <Route path={relative(ADMIN_ROUTES.BOOKINGS)} element={<Bookings />} />
-      <Route path={relative(ADMIN_ROUTES.REPORTS)} element={<Reports />} />
-      <Route path={relative(ADMIN_ROUTES.SETTINGS)} element={<Settings />} />
+
+      {/* Users */}
+      <Route path={relative(ADMIN_ROUTES.USERS)} element={<UsersPage />} />
+      <Route path={relative(ADMIN_ROUTES.ADD_USER)} element={<AddUserPage />} />
+      <Route path={relative(ADMIN_ROUTES.EDIT_USER())} element={<EditUserPage />} />
+
+      {/* Catch-all: any unknown /admin/* path */}
+      <Route path="*" element={<Navigate to={ADMIN_ROUTES.DASHBOARD} replace />} />
     </Route>
   </>
 );

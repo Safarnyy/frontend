@@ -12,9 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import {
-  Edit,
+  // Edit,
   Trash2,
   Mail,
   Phone,
@@ -99,17 +98,19 @@ export default function UsersTable() {
     },
     [toggleStatusMutation]
   );
-
   const getRoleIcon = (role: string) => {
+    const iconClass = "h-4 w-4";
+
     switch (role) {
       case "admin":
-        return <Shield className="h-4 w-4" />;
+        return <Shield className={iconClass} />;
       case "employee":
-        return <Users className="h-4 w-4" />;
+        return <Users className={iconClass} />;
       default:
-        return <CircleUser className="h-4 w-4" />;
+        return <CircleUser className={iconClass} />;
     }
   };
+
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
@@ -123,139 +124,176 @@ export default function UsersTable() {
     });
   };
 
-  const columns = useMemo<ColumnDef<User>[]>(
-    () => [
-      {
-        id: "user",
-        header: "User",
-        cell: ({ row }) => {
-          const user = row.original;
-          return (
-            <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10 border">
-                {/* Show user image if available */}
-                {user.avatarUrl && (
-                  <AvatarImage
-                    src={user.avatarUrl}
-                    alt={`${user.firstName} ${user.lastName}`}
-                    className="object-cover"
-                  />
-                )}
-                <AvatarFallback className="bg-blue-100 text-blue-600 font-medium">
-                  {getInitials(user.firstName, user.lastName)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="font-semibold text-gray-900">
-                  {user.firstName} {user.lastName}
-                </span>
-                <div className="flex items-center gap-1 text-sm text-gray-500">
-                  <Mail className="h-3 w-3" />
-                  <span className="truncate max-w-[180px]">{user.email}</span>
-                </div>
-                {user.phone && (
-                  <div className="flex items-center gap-1 text-sm text-gray-500">
-                    <Phone className="h-3 w-3" />
-                    <span>{user.phone}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        },
-      },
-      {
-        accessorKey: "role",
-        header: "Role",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            {getRoleIcon(row.original.role)}
-            <Badge
-              variant={
-                row.original.role === "admin"
-                  ? "default"
-                  : row.original.role === "employee"
-                  ? "secondary"
-                  : "outline"
-              }
-              className="capitalize"
-            >
-              {row.original.role}
-            </Badge>
-          </div>
-        ),
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-          <div className="flex flex-col gap-1">
-            <Badge
-              variant={row.original.active ? "default" : "destructive"}
-              className="w-fit cursor-pointer"
-              onClick={() => handleToggleStatus(row.original)}
-            >
-              {row.original.active ? "Active" : "Inactive"}
-            </Badge>
-            <Badge
-              variant={row.original.isEmailVerified ? "default" : "secondary"}
-              className="w-fit"
-            >
-              {row.original.isEmailVerified ? "Verified" : "Unverified"}
-            </Badge>
-          </div>
-        ),
-      },
-      {
-        id: "joined",
-        header: "Joined",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Calendar className="h-4 w-4" />
-            {formatDate(row.original.createdAt)}
-          </div>
-        ),
-      },
-      {
-        id: "actions",
-        header: "Actions",
-        cell: ({ row }) => {
-          const user = row.original;
-          return (
-            <div className="flex items-center gap-2">
-              {/* Edit Button */}
-              <Link to={`/admin/users/edit/${user.id}`}>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 w-8 p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
-                >
-                  <Edit className="h-4 w-4" />
-                  <span className="sr-only">
-                    Edit {user.firstName} {user.lastName}
-                  </span>
-                </Button>
-              </Link>
+  const columns = useMemo<ColumnDef<User>[]>(() => [
+    {
+      id: "user",
+      header: "User",
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10 border">
+              {user.avatarUrl && (
+                <AvatarImage
+                  src={user.avatarUrl}
+                  alt={`${user.firstName} ${user.lastName}`}
+                  className="object-cover"
+                />
+              )}
+              <AvatarFallback className="bg-blue-100 text-blue-600 font-medium">
+                {getInitials(user.firstName, user.lastName)}
+              </AvatarFallback>
+            </Avatar>
 
-              {/* Delete Button */}
+            <div className="flex flex-col">
+              <span className="font-semibold text-gray-900">
+                {user.firstName} {user.lastName}
+              </span>
+
+              <div className="flex items-center gap-1 text-sm text-gray-500">
+                <Mail className="h-3 w-3" />
+                <span className="truncate max-w-[180px]">{user.email}</span>
+              </div>
+
+              {user.phone && (
+                <div className="flex items-center gap-1 text-sm text-gray-500">
+                  <Phone className="h-3 w-3" />
+                  <span>{user.phone}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      },
+    },
+
+    // Role column
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }) => {
+        const role = row.original.role;
+
+        const icon = getRoleIcon(role);
+
+        // Color classes for each role
+        const roleStyles: Record<string, string> = {
+          admin:
+            "bg-purple-100 text-purple-700 border border-purple-300 hover:bg-purple-200",
+          employee:
+            "bg-orange-100 text-orange-700 border border-orange-300 hover:bg-orange-200",
+          user:
+            "bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200",
+        };
+
+        return (
+          <div
+            className={`
+          inline-flex items-center gap-2 px-3 py-1.5
+          rounded-full text-xs font-semibold capitalize
+          transition-colors cursor-default select-none
+          ${roleStyles[role] ?? roleStyles["user"]}
+        `}
+          >
+            {icon}
+            {role}
+          </div>
+        );
+      },
+    },
+
+
+    {
+      id: "active",
+      header: "Active",
+      cell: ({ row }) => {
+        const active = row.original.active;
+
+        return (
+          <span
+            onClick={() => handleToggleStatus(row.original)}
+            className={`
+          px-3 py-1 rounded-full text-xs font-semibold cursor-pointer
+          transition-all border
+          ${active
+                ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-200"
+                : "bg-red-100 text-red-700 border-red-200 hover:bg-red-200"
+              }
+        `}
+          >
+            {active ? "Active" : "Inactive"}
+          </span>
+        );
+      },
+    },
+
+    {
+      id: "verified",
+      header: "Verified",
+      cell: ({ row }) => {
+        const verified = row.original.isEmailVerified;
+
+        return (
+          <span
+            className={`
+          px-3 py-1 rounded-full text-xs font-semibold border
+          ${verified
+                ? "bg-blue-100 text-blue-700 border-blue-200"
+                : "bg-gray-100 text-gray-700 border-gray-200"
+              }
+        `}
+          >
+            {verified ? "Verified" : "Unverified"}
+          </span>
+        );
+      },
+    },
+
+
+    // Joined column
+    {
+      id: "joined",
+      header: "Joined",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Calendar className="h-4 w-4" />
+          {formatDate(row.original.createdAt)}
+        </div>
+      ),
+    },
+
+    // Actions column
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <div className="flex items-center gap-2">
+            {/* <Link to={`/admin/users/edit/${user.id}`}>
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
-                onClick={() => handleDeleteClick(user)}
+                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
               >
-                <Trash2 className="h-4 w-4" />
-                <span className="sr-only">
-                  Delete {user.firstName} {user.lastName}
-                </span>
+                <Edit className="h-4 w-4" />
               </Button>
-            </div>
-          );
-        },
+            </Link> */}
+
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
+              onClick={() => handleDeleteClick(user)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        );
       },
-    ],
-    [handleDeleteClick, handleToggleStatus]
-  );
+    },
+  ], [handleDeleteClick, handleToggleStatus]);
+
 
   const table = useReactTable({
     data: data?.data || [],
@@ -298,32 +336,29 @@ export default function UsersTable() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Total Users */}
             <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-blue-100 rounded-lg">
                   <Users className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Total Users
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {totalUsers}
-                  </p>
+                  <p className="text-sm font-medium text-gray-600">Total Users</p>
+                  <p className="text-2xl font-bold text-gray-900">{totalUsers}</p>
                 </div>
               </div>
             </div>
 
+            {/* Active Users */}
             <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-green-100 rounded-lg">
                   <CircleUser className="h-6 w-6 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Active Users
-                  </p>
+                  <p className="text-sm font-medium text-gray-600">Active Users</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {data?.data.filter((user) => user.active).length || 0}
                   </p>
@@ -331,6 +366,7 @@ export default function UsersTable() {
               </div>
             </div>
 
+            {/* Admins */}
             <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-purple-100 rounded-lg">
@@ -339,28 +375,13 @@ export default function UsersTable() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Admins</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {data?.data.filter((user) => user.role === "admin")
-                      .length || 0}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-orange-100 rounded-lg">
-                  <Users className="h-6 w-6 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Employees</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {data?.data.filter((user) => user.role === "employee")
-                      .length || 0}
+                    {data?.data.filter((user) => user.role === "admin").length || 0}
                   </p>
                 </div>
               </div>
             </div>
           </div>
+
 
           {/* Search and Filters */}
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-6">

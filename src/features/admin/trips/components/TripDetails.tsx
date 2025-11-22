@@ -23,6 +23,7 @@ import {
 } from "../hooks/useTrips";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { Spinner } from "@/components/ui/Spinner";
 
 export default function TripDetails() {
     const { id } = useParams();
@@ -46,7 +47,7 @@ export default function TripDetails() {
     if (isLoading)
         return (
             <PageContainer>
-                <p>Loading trip...</p>
+                <Spinner />
             </PageContainer>
         );
 

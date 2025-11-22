@@ -8,12 +8,13 @@ import {
   CreditCard,
   RefreshCw,
 } from "lucide-react";
+import { Spinner } from "@/components/ui/Spinner";
 
 export default function BookingDetailsPage() {
   const { id } = useParams();
   const { data: booking, isLoading } = useBookingByIdQuery(id!);
 
-  if (isLoading) return <PageContainer>Loading...</PageContainer>;
+  if (isLoading) return <PageContainer><Spinner /></PageContainer>;
   if (!booking) return <PageContainer>No booking found.</PageContainer>;
 
   const renderStatusBadge = (status: string) => {
@@ -21,8 +22,8 @@ export default function BookingDetailsPage() {
       status === "cancelled"
         ? "bg-red-100 text-red-700"
         : status === "pending"
-        ? "bg-yellow-100 text-yellow-700"
-        : "bg-green-100 text-green-700";
+          ? "bg-yellow-100 text-yellow-700"
+          : "bg-green-100 text-green-700";
     return (
       <span
         className={`px-3 py-1 rounded-full text-sm font-semibold ${statusClasses}`}
@@ -104,11 +105,11 @@ export default function BookingDetailsPage() {
           booking.paymentMethod
         )}
         {booking.durationDays > 0 &&
-        renderCard(
-          <Calendar size={24} className="text-blue-500" />,
-          "Duration",
-          `${booking.durationDays || 0} days`
-        )}
+          renderCard(
+            <Calendar size={24} className="text-blue-500" />,
+            "Duration",
+            `${booking.durationDays || 0} days`
+          )}
         {booking.refundAmount > 0 &&
           renderCard(
             <RefreshCw size={24} className="text-red-500" />,
