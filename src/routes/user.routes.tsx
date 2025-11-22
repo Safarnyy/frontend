@@ -13,6 +13,7 @@ import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
 import PackagesPage from "../features/user/Packages/Pages/PackagePage";
 import PackageDetails from "@/features/user/Packages/Pages/PackageDetails";
 import UserProtectedRoute from "../auth/UserProtectedRoute";
+import NotAdminProtected from "@/auth/NotAdminProtected";
 
 const Bookings = () => <div>My Bookings</div>;
 const BookingDetails = () => <div>Booking Details</div>;
@@ -27,7 +28,10 @@ export const userRoutes = (
     <Route
       path={PUBLIC_ROUTES.HOME}
       element={
+        <NotAdminProtected>
         <UserLayout />
+        </NotAdminProtected>
+
       }
     >
       {/* Public Routes - Accessible to everyone (guests and logged-in users) */}
