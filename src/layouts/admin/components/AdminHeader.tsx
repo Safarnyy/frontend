@@ -1,4 +1,3 @@
-// src/layouts/admin/components/AdminHeader.tsx
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,7 +10,7 @@ import {
 import { Menu, User, LogOut } from "lucide-react";
 import { Link } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 interface AdminHeaderProps {
   onToggleSidebar: () => void;

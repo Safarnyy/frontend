@@ -13,7 +13,7 @@ import {
 import { cn } from "../../../lib/utils";
 import { useAuth } from "../../../hooks/useAuth";
 import AuthModal from "../../../features/user/auth/components/AuthModal";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { name: "Trips", path: "/trips" },
