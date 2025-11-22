@@ -13,6 +13,7 @@ import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
 import PackagesPage from "../features/user/Packages/Pages/PackagePage";
 import PackageDetails from "@/features/user/Packages/Pages/PackageDetails";
 import UserProtectedRoute from "../auth/UserProtectedRoute";
+import NotAdminProtected from "@/auth/NotAdminProtected";
 
 const Bookings = () => <div>My Bookings</div>;
 const BookingDetails = () => <div>Booking Details</div>;
@@ -27,7 +28,9 @@ export const userRoutes = (
     <Route
       path={PUBLIC_ROUTES.HOME}
       element={
-        <UserLayout />
+        <NotAdminProtected>
+          <UserLayout />
+        </NotAdminProtected>
       }
     >
       {/* Public Routes - Accessible to everyone (guests and logged-in users) */}
@@ -65,7 +68,7 @@ export const userRoutes = (
         element={<div>Google authentication failed. Please try again.</div>}
       />
 
-      {/* 🔒 Protected User Routes - Only for authenticated non-admin users */}
+      {/* Protected User Routes - Only for authenticated non-admin users */}
       <Route
         path={USER_ROUTES.PROFILE.replace("/", "")}
         element={
