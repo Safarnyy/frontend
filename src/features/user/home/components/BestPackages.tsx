@@ -1,15 +1,12 @@
-// import heroImg from "@/assets/Hurghada.webp";
 import { motion } from "framer-motion";
 import { useAllPackages } from "../../Packages/hook/useAllPackage";
 import { Link } from "react-router";
-// import { useNavigate } from "react-router";
 
 export default function BestPackages() {
   const { data: packages } = useAllPackages();
   const uniquePackages = packages?.filter(
     (pack, index, self) => index === self.findIndex((p) => p.id === pack.id)
   );
-  console.log(packages);
 
   return (
     <>
@@ -24,6 +21,7 @@ export default function BestPackages() {
           >
             Best Package
           </motion.h2>
+
           <motion.p
             initial={{ y: -80, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -58,17 +56,16 @@ export default function BestPackages() {
                     <h3 className="text-xl font-semibold text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">
                       {pack.title}
                     </h3>
+
                     <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
                       {pack.shortDesc}
                     </p>
-
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </Link>
           ))}
         </motion.div>
-
       </div>
     </>
   );
