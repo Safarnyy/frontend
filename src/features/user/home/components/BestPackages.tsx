@@ -34,6 +34,7 @@ export default function BestPackages() {
             Discover the world's most breathtaking locations
           </motion.p>
         </div>
+
         <motion.div
           initial={{ opacity: 0, y: 80 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -48,7 +49,7 @@ export default function BestPackages() {
                   <img
                     src={pack.imageCoverUrl}
                     alt={pack.title}
-                    className="w-full h-56 object-cover transition-transform duration-300 hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                   />
                 </div>
 
@@ -63,7 +64,7 @@ export default function BestPackages() {
 
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </Link>
           ))}
         </motion.div>
