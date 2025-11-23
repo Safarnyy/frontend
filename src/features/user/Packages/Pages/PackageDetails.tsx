@@ -15,6 +15,7 @@ import {
   FaHotel,
   FaBook,
 } from "react-icons/fa";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function PackageDetails() {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +27,8 @@ export default function PackageDetails() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
+
+  const { isAuthenticated } = useAuth()
 
   const closeModal = () => setIsOpen(false);
   const nextImage = () =>
@@ -250,15 +253,16 @@ export default function PackageDetails() {
         </div>
       )}
       {/* Book Now */}
-      <div className="flex justify-center mt-6">
-        <button
-          className="flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl w-full md:w-72 bg-gradient-to-r from-cyan-500 to-blue-500 hover:brightness-105 shadow-lg transition duration-300 font-semibold text-lg cursor-pointer"
-          onClick={() => setShowBooking(true)}
-        >
-          <FaBook /> Book Now
-        </button>
-      </div>
-
+      {isAuthenticated && (
+        <div className="flex justify-center mt-6">
+          <button
+            className="flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl w-full md:w-72 bg-gradient-to-r from-cyan-500 to-blue-500 hover:brightness-105 shadow-lg transition duration-300 font-semibold text-lg cursor-pointer"
+            onClick={() => setShowBooking(true)}
+          >
+            <FaBook /> Book Now
+          </button>
+        </div>
+      )}
       {/* Booking Modal */}
       {showBooking && (
         <BookingModal

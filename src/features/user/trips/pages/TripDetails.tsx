@@ -12,11 +12,14 @@ import { useState, useEffect } from "react";
 import BookingModal from "../../booking/components/BookingModal";
 import { FaExclamationTriangle, FaClock, FaInfoCircle, FaStar, FaShoppingBag, FaBook } from "react-icons/fa";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function TripDetails() {
   const { id } = useParams<{ id: string }>();
   const { data: trip, isLoading, isError, error } = useTrip(id!);
   const [showBooking, setShowBooking] = useState(false);
+
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => {
     document.body.style.overflow = showBooking ? "hidden" : "auto";
@@ -127,14 +130,16 @@ export default function TripDetails() {
       </div>
 
       {/* Book Now */}
-      <div className="flex justify-center mt-6">
-        <button
-          className="flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl w-full md:w-72 bg-gradient-to-r from-cyan-500 to-blue-500 hover:brightness-105 shadow-lg transition duration-300 font-semibold text-lg cursor-pointer"
-          onClick={() => setShowBooking(true)}
-        >
-          <FaBook /> Book Now
-        </button>
-      </div>
+      {isAuthenticated && (
+        <div className="flex justify-center mt-6">
+          <button
+            className="flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl w-full md:w-72 bg-gradient-to-r from-cyan-500 to-blue-500 hover:brightness-105 shadow-lg transition duration-300 font-semibold text-lg cursor-pointer"
+            onClick={() => setShowBooking(true)}
+          >
+            <FaBook /> Book Now
+          </button>
+        </div>
+      )}
 
       {showBooking && (
         <BookingModal
